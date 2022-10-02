@@ -1,9 +1,11 @@
 import React from 'react'
 
-export const ImageGalleryItem = () => {
+export const ImageGalleryItem = ({images}) => {
   return (
-    <li>
-        <img src="" alt="" /> Image
-    </li>
+    images.map(({id, webformatURL, largeImageURL, tags}) => (
+      <li key={id}>
+        <img src={webformatURL} alt={tags} />
+      </li>
+    ))
   )
 }
