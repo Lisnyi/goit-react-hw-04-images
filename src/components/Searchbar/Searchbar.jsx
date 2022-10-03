@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { BiSearch } from "react-icons/bi";
+import { SearchbarBox, SearchForm, SearchFormButton, SearchFormInput } from './Searchbar.styled';
 
 export class Searchbar extends Component {
   state ={
@@ -11,18 +13,29 @@ export class Searchbar extends Component {
     })
   }
 
+  handleSubmit = (e) => {
+    const { onSubmit } = this.props
+    const { search } = this.state
+    e.preventDefault()
+    if (search) {
+      onSubmit(search.trim())
+      this.setState({
+        search: '',
+      })
+    }
+  }
+
   render() {
     const { search } = this.state
-    const { onSubmit } = this.props
-    const { handleChange } = this
+    const { handleChange, handleSubmit } = this
     return (
-      <header>
-        <form onSubmit={(e) => onSubmit(e, search)}>
-            <button type="submit">
-            <span>Search</span>
-            </button>
+      <SearchbarBox>
+        <SearchForm onSubmit={handleSubmit}>
+            <SearchFormButton type="submit">
+              <BiSearch/>
+            </SearchFormButton>
 
-            <input
+            <SearchFormInput
                 type="text"
                 autoComplete="off"
                 autoFocus
@@ -30,8 +43,8 @@ export class Searchbar extends Component {
                 value={search}
                 onChange={handleChange}
             />
-        </form>
-      </header>
+        </SearchForm>
+      </SearchbarBox>
     )
   }
 }
