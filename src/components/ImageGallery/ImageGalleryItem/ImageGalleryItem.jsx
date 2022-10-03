@@ -1,4 +1,5 @@
 import React,  { Component } from 'react'
+import PropTypes from 'prop-types'
 import { GalleryCard, CardImage } from './ImageGalleryItem.styled'
 import { Modal } from 'shared/components/Modal/Modal'
 
@@ -46,3 +47,11 @@ export class ImageGalleryItem extends Component {
   }
 }
 
+ImageGalleryItem.propTypes = {
+  images: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    webformatURL: PropTypes.string.isRequired,
+    largeImageURL: PropTypes.string.isRequired,
+    tags: PropTypes.string.isRequired,
+}))
+}

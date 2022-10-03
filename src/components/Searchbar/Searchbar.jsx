@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { BiSearch } from "react-icons/bi";
 import { SearchbarBox, SearchForm, SearchFormButton, SearchFormInput } from './Searchbar.styled';
 
@@ -47,4 +48,8 @@ export class Searchbar extends Component {
       </SearchbarBox>
     )
   }
+}
+
+Searchbar.propTypes ={
+  onSubmit: PropTypes.func.isRequired,
 }
