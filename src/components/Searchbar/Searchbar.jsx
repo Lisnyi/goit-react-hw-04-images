@@ -20,9 +20,6 @@ export class Searchbar extends Component {
     e.preventDefault()
     if (search) {
       onSubmit(search.trim())
-      this.setState({
-        search: '',
-      })
     }
   }
 

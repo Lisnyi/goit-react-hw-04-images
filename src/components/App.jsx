@@ -50,11 +50,15 @@ export default class App extends Component {
   }
 
   onSubmit = (search) => {
-    this.setState({
-      search,
-      page: 1,
-      items: [],
-    })
+    const normalizedStateSearch = this.state.search.toLocaleLowerCase()
+    const normalizedSearch = search.toLocaleLowerCase()
+    if (normalizedStateSearch !== normalizedSearch) {
+      this.setState({
+        search,
+        page: 1,
+        items: [],
+      })
+    }
   }
 
   handleClick = () => {
