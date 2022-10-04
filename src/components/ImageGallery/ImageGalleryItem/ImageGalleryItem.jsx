@@ -29,18 +29,16 @@ export class ImageGalleryItem extends Component {
   }
 
   render() {
-    const { modalOpen, modalContent: {largeImageURL, tags} } = this.state
-    const { images } = this.props
+    const { modalOpen, modalContent } = this.state
+    const { id, webformatURL, largeImageURL, tags } = this.props
     const { onClose, openModal } = this 
     return (
       <>
-        {images.map(({id, webformatURL, largeImageURL, tags}) => (
-          < GalleryCard key={id}>
+        < GalleryCard key={id}>
             <CardImage src={webformatURL} alt={tags} onClick={()=>openModal({largeImageURL, tags})}/>
-          </ GalleryCard>
-        ))}
+        </ GalleryCard>
         {modalOpen && <Modal onClose={onClose}>
-                        <img src={largeImageURL} alt={tags}></img>
+                        <img src={modalContent.largeImageURL} alt={modalContent.tags}></img>
                       </Modal>}
       </>
     )
@@ -48,10 +46,8 @@ export class ImageGalleryItem extends Component {
 }
 
 ImageGalleryItem.propTypes = {
-  images: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number.isRequired,
     webformatURL: PropTypes.string.isRequired,
     largeImageURL: PropTypes.string.isRequired,
     tags: PropTypes.string.isRequired,
-}))
 }
