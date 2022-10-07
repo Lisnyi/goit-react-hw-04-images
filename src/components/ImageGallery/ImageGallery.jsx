@@ -7,7 +7,7 @@ export const ImageGallery = ({images}) => {
   return (
       <ImageGalleryList>
         {images.map(({id, webformatURL, largeImageURL, tags}) => <ImageGalleryItem
-                                                                    id={id}
+                                                                    key={id}
                                                                     webformatURL={webformatURL}
                                                                     largeImageURL={largeImageURL}
                                                                     tags={tags}/>)}

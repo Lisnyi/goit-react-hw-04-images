@@ -2,14 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { StyledButton } from './Button.styled'
 
-export const Button = ({type, onClick, children}) => {
+export const Button = ({type='button', onClick, children}) => {
   return (
     <StyledButton type={type} onClick={onClick}>{children}</StyledButton>
   )
-}
-
-Button.defaultProps = {
-  type: "button",
 }
 
 Button.propTypes = {

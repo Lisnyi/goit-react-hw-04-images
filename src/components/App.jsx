@@ -1,96 +1,76 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ThreeDots } from  'react-loader-spinner'
 import { searchImages } from 'shared/API/post';
 import { Button } from 'shared/components/Button/Button';
 import { Searchbar, ImageGallery } from '../components';
 import { AppBox } from './App.styled';
-export default class App extends Component {
-  state = {
-    items: [],
-    totalHits: 0,
-    page: 1,
-    search: '',
-    loading: false,
-    error: null,
-  }
 
-  componentDidUpdate (prevProps, prevState) {
-    const {page, search} = this.state
-    if (prevState.search !== search || prevState.page !== page) {
-      this.fetchImages(search, page)
+export const App = () => {
+  const [items, setItems] = useState([])
+  const [totalHits, setTotalHits] = useState(0)
+  const [page, setPage] = useState(1)
+  const [search, setSearch] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  const loadMore = Boolean(items.length < totalHits)
+  const isImages = Boolean(items.length)
+
+  useEffect(()=>{
+    if (search === ''){
+      return
     }
-  }
+    fetchImages(search, page)
+  },[search, page])
 
-  async fetchImages (seach, page) {
-    this.setState({
-      loading: true,
-      error: null
-    })
+  async function fetchImages (search, page) {
+    setLoading(true)
+    setError(null)
     try {
-      const {data} = await searchImages(seach, page)
-      if (data.totalHits === 0) {
-        this.setState({
-          error: 'We did not find any images for your request'
-        })
+      const {data:{totalHits, hits}} = await searchImages(search, page)
+      if (totalHits === 0) {
+        setError('We did not find any images for your request')
         return
       }
-      this.setState(({items})=>({
-        items: [...items, ...data.hits],
-        totalHits: data.totalHits,
-      }))
+      setItems((prev)=>([...prev, ...hits]))
+      setTotalHits(totalHits)
     } catch (error) {
-      this.setState({
-        error: 'Whoops something went wrong',
-      })
+      setError('Whoops something went wrong')
     } finally {
-        this.setState({
-          loading: false,
-        })
+      setLoading(false)
       }
   }
 
-  onSubmit = (search) => {
-    const normalizedStateSearch = this.state.search.toLocaleLowerCase()
+  function onSubmit (query) {
     const normalizedSearch = search.toLocaleLowerCase()
-    if (normalizedStateSearch !== normalizedSearch) {
-      this.setState({
-        search,
-        page: 1,
-        items: [],
-      })
+    const normalizedQuery = query.toLocaleLowerCase()
+    if (normalizedSearch !== normalizedQuery) {
+      setSearch(query)
+      setPage(1)
+      setItems([])
     }
   }
 
-  handleClick = () => {
-    this.setState(({page})=>(
-      {
-        page: page + 1,
-      }
-    )) 
+  function handleClick () {
+    setPage((prev)=>(prev + 1)) 
   }
 
-  render() {
-    const { onSubmit, handleClick } = this
-    const { items, totalHits, loading, error } = this.state
-    const loadMore = Boolean(items.length < totalHits)
-    const isImages = Boolean(items.length)
-    return (
-      <AppBox>
-        <Searchbar onSubmit={onSubmit}/>
-        {isImages && <ImageGallery images={items}/>}
-        {error && <h2>{error}</h2>}
-        {loading && <ThreeDots 
-                      height="80" 
-                      width="80" 
-                      radius="9"
-                      color="#9b2a4c" 
-                      ariaLabel="three-dots-loading"
-                      wrapperStyle={{}}
-                      wrapperClassName=""
-                      visible={true}
-                      />}
-        {isImages && loadMore && <Button type={'button'} onClick={handleClick}>Load more</Button>}
-      </AppBox>
-    )
-  }
+  return (
+    <AppBox>
+      <Searchbar onSubmit={onSubmit}/>
+      {isImages && <ImageGallery images={items}/>}
+      {error && <h2>{error}</h2>}
+      {loading && <ThreeDots 
+                    height="80" 
+                    width="80" 
+                    radius="9"
+                    color="#9b2a4c" 
+                    ariaLabel="three-dots-loading"
+                    wrapperStyle={{}}
+                    wrapperClassName=""
+                    visible={true}
+                    />}
+      {isImages && loadMore && <Button onClick={handleClick}>Load more</Button>}
+    </AppBox>
+  )
 }
